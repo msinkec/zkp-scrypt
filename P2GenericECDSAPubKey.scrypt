@@ -6,6 +6,8 @@ contract P2PK {
     Point pk;
 
     public function unlock(int e, int z, SigHashPreimage preimage) {
+        require(Tx.checkPreimageOpt(preimage));
+
         // Compute A = z*G - e*PK
         Point zG = EC.multByScalar(EC.G, z);
         Point ePK = EC.multByScalar(this.pk, e);

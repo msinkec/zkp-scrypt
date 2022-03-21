@@ -95,7 +95,7 @@ library EC {
     }
 
     static function negatePoint(Point p) : Point {
-        Point res = {p.x, p.y * -1};
+        Point res = {p.x, modReduce(p.y * -1, P)};
         return res;
     }
 
