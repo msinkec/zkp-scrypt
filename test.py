@@ -12,17 +12,18 @@ p = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F
 
 
 if __name__ == '__main__':
-    key_priv = PrivateKey.from_arbitrary_bytes(b'test123')
+    #key_priv = PrivateKey.from_arbitrary_bytes(b'test123')
+    key_priv = PrivateKey.from_random()
     key_pub = key_priv.public_key
 
     contract = './P2GenericECDSAPubKey.scrypt' 
 
-    #compiler_result = compile_contract(contract, debug=False)
-    #desc = compiler_result.to_desc()
+    compiler_result = compile_contract(contract, debug=False)
+    desc = compiler_result.to_desc()
 
     # Load desc instead:
-    with open('./out/P2GenericECDSAPubKey_desc.json', 'r') as f:
-        desc = json.load(f)
+    #with open('./out/P2GenericECDSAPubKey_desc.json', 'r') as f:
+    #    desc = json.load(f)
     
     type_classes = build_type_classes(desc)
     Point = type_classes['Point']
@@ -37,7 +38,8 @@ if __name__ == '__main__':
     preimage = get_preimage_from_input_context(context, sighash_flag)
 
     ### Derive proof:
-    r = PrivateKey.from_arbitrary_bytes(b'123test321')
+    #r = PrivateKey.from_arbitrary_bytes(b'123test321')
+    r = PrivateKey.from_random()
 
     A = r.public_key
     G = PrivateKey.from_int(1).public_key
@@ -51,7 +53,7 @@ if __name__ == '__main__':
     zG = z.public_key
     ePK = key_pub.multiply(e._secret)
     ePKx, ePKy = ePK.to_point()
-    ePK_neg = PublicKey.from_point(ePKx, -ePKy % p)
+    ePK_neg = PublicKey.from_point(ePKx, (ePKy * -1) % p)
     A = PublicKey.combine_keys([zG, ePK_neg])
 
     st = G.to_bytes(compressed=False) + key_pub.to_bytes(compressed=False)

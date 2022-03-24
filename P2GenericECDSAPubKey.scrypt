@@ -16,7 +16,7 @@ contract P2PK {
         // Compute e* = RO(preimage, st, A)
         bytes st = EC.point2PubKey(EC.G) + EC.point2PubKey(this.pk);
         bytes bA = EC.point2PubKey(A);
-        int _e = unpack(sha256(preimage + st + bA)) % 340282366920938463463374607431768211456;
+        int _e = unpack(sha256(preimage + st + bA) + b'00') % 340282366920938463463374607431768211456;
 
         require(e == _e);
     }
